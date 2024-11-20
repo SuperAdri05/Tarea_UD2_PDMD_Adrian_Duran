@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Tarea_UD2</string>
+    <string name="edad">Edad</string>
+    <string name="correo_electr_nico">Correo electrónico</string>
+    <string name="registrar">Registrar</string>
+    <string name="nombre">Nombre</string>
+    <string name="registro">Registro</string>
+    <string name="logo">Logo</string>
+    <string name="todo">TODO</string>
+    <string name="user">user</string>
+    <string name="eliminar_usuario">Eliminar usuario</string>
+</resources>

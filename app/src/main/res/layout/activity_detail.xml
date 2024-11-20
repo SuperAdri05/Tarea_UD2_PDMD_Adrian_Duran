@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/btnBack"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:background="@drawable/fondo_detail">
+
+        <ImageButton
+            android:id="@+id/btnVolver"
+            android:layout_width="66dp"
+            android:layout_height="62dp"
+            android:background="@null"
+            android:contentDescription="@string/todo"
+            android:hapticFeedbackEnabled="true"
+            android:src="@drawable/cerrar"
+            tools:ignore="DuplicateSpeakableTextCheck" />
+
+        <ImageView
+            android:id="@+id/imgUser"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:contentDescription="@string/todo"
+            android:src="@drawable/user" />
+
+        <TextView
+            android:id="@+id/txtName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/txtAge"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp" />
+    </LinearLayout>
+</ScrollView>
