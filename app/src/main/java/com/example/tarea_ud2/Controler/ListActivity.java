@@ -24,7 +24,6 @@ public class ListActivity extends AppCompatActivity {
     private UserAdapter adapter;
     private ArrayList<User> userList;
     private ActionMode actionMode;
-    private int selectedPosition = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
