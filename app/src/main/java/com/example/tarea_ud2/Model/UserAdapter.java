@@ -1,7 +1,5 @@
 package com.example.tarea_ud2.Model;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +12,20 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.tarea_ud2.R;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder> {
     private final ArrayList<User> userList;
+    private final HashSet<Integer> selectedPositions = new HashSet<>();
+    private OnSelectionChangeListener selectionChangeListener;
     private OnUserClickListener listener;
-    private int visibleTrashPosition = -1;
+
     public interface OnUserClickListener {
         void onUserClick(User user);
+    }
+
+    public interface OnSelectionChangeListener {
+        void onSelectionChanged(int selectedCount);
     }
 
     public UserAdapter(ArrayList<User> userList, OnUserClickListener listener) {
@@ -36,67 +41,74 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull UserViewHolder holder, @SuppressLint("RecyclerView") int position) {
+    public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = userList.get(position);
 
         holder.txtName.setText(user.getName());
         holder.imgUser.setImageResource(user.getImageResourceId());
-
-        holder.imgDelete.setVisibility(position == visibleTrashPosition ? View.VISIBLE : View.GONE);
+        holder.itemView.setSelected(selectedPositions.contains(position));
 
         holder.itemView.setOnClickListener(v -> {
-            if (visibleTrashPosition != -1) {
-                visibleTrashPosition = -1;
-                notifyDataSetChanged();
-            } else {
+            if (selectedPositions.isEmpty()) {
                 listener.onUserClick(user);
+            } else {
+                toggleSelection(position);
             }
         });
 
         holder.itemView.setOnLongClickListener(v -> {
-            visibleTrashPosition = position;
-            notifyDataSetChanged();
+            toggleSelection(position);
             return true;
         });
-
-        holder.imgDelete.setOnClickListener(v -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(holder.itemView.getContext());
-            builder.setMessage("¿Seguro que quieres eliminar a este usuario?")
-                    .setPositiveButton("Sí", (dialog, id) -> {
-                        userList.remove(position);
-                        notifyItemRemoved(position);
-                        visibleTrashPosition = -1;
-                        notifyDataSetChanged();
-                    })
-                    .setNegativeButton("No", (dialog, id) -> {
-                        dialog.dismiss();
-                    });
-            builder.create().show();
-        });
     }
-
 
     @Override
     public int getItemCount() {
         return userList.size();
     }
 
-    public void clearVisibleTrash() {
-        if (visibleTrashPosition != -1) {
-            visibleTrashPosition = -1;
-            notifyDataSetChanged();
+    public void setOnSelectionChangeListener(OnSelectionChangeListener listener) {
+        this.selectionChangeListener = listener;
+    }
+
+    public void deleteSelectedUsers() {
+        ArrayList<User> usersToRemove = new ArrayList<>();
+        for (int position : selectedPositions) {
+            usersToRemove.add(userList.get(position));
+        }
+        userList.removeAll(usersToRemove);
+        clearSelection();
+        notifyDataSetChanged();
+    }
+
+    public void clearSelection() {
+        selectedPositions.clear();
+        notifyDataSetChanged();
+        if (selectionChangeListener != null) {
+            selectionChangeListener.onSelectionChanged(0);
+        }
+    }
+
+    private void toggleSelection(int position) {
+        if (selectedPositions.contains(position)) {
+            selectedPositions.remove(position);
+        } else {
+            selectedPositions.add(position);
+        }
+        notifyItemChanged(position);
+        if (selectionChangeListener != null) {
+            selectionChangeListener.onSelectionChanged(selectedPositions.size());
         }
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
         TextView txtName;
-        ImageView imgUser, imgDelete;
+        ImageView imgUser;
 
         public UserViewHolder(@NonNull View itemView) {
             super(itemView);
             txtName = itemView.findViewById(R.id.txtName);
             imgUser = itemView.findViewById(R.id.imgUser);
-            imgDelete = itemView.findViewById(R.id.imgDelete);
         }
     }
 }

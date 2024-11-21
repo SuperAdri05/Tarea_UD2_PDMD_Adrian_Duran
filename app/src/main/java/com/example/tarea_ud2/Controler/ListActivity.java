@@ -1,15 +1,13 @@
 package com.example.tarea_ud2.Controler;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageButton;
+import android.view.Menu;
+import android.view.MenuItem;
 
-import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,50 +23,75 @@ public class ListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private UserAdapter adapter;
     private ArrayList<User> userList;
-    private ImageButton btnBack;
+    private ActionMode actionMode;
+    private int selectedPosition = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list);
 
         recyclerView = findViewById(R.id.recyclerView);
-        btnBack = findViewById(R.id.buttonBack);
         userList = Utils.userList;
 
-        adapter = new UserAdapter(userList, user -> {
-            Intent intent = new Intent(ListActivity.this, DetailActivity.class);
-            intent.putExtra("name", user.getName());
-            intent.putExtra("email", user.getEmail());
-            intent.putExtra("age", user.getAge());
-            intent.putExtra("imageResourceId", user.getImageResourceId());
-            startActivity(intent);
-        });
-
+        adapter = new UserAdapter(userList, this::showDetail);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
-        btnBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
+        adapter.setOnSelectionChangeListener(selectedCount -> {
+            if (selectedCount > 0) {
+                if (actionMode == null) {
+                    actionMode = startSupportActionMode(actionModeCallback);
+                }
+                actionMode.setTitle(selectedCount + " seleccionados");
+            } else if (actionMode != null) {
+                actionMode.finish();
             }
         });
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (adapter != null) {
-            adapter.clearVisibleTrash();
-        }
-        return super.onTouchEvent(event);
+    private void showDetail(User user) {
+        Intent intent = new Intent(this, DetailActivity.class);
+        intent.putExtra("name", user.getName());
+        intent.putExtra("email", user.getEmail());
+        intent.putExtra("age", user.getAge());
+        intent.putExtra("imageResourceId", user.getImageResourceId());
+        startActivity(intent);
     }
 
-    @Override
-    public void onBackPressed() {
-        if (adapter != null && adapter.getItemCount() > 0) {
-            adapter.clearVisibleTrash();
-        } else {
-            super.onBackPressed();
+    private final ActionMode.Callback actionModeCallback = new ActionMode.Callback() {
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            getMenuInflater().inflate(R.menu.menu_action, menu);
+            return true;
         }
-    }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false;
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            if (item.getItemId() == R.id.action_delete) {
+                new AlertDialog.Builder(ListActivity.this)
+                        .setTitle("Confirmar eliminación")
+                        .setMessage("¿Estás seguro de que quieres eliminar este usuario?")
+                        .setPositiveButton("Sí", (dialog, which) -> {
+                            adapter.deleteSelectedUsers();
+                            mode.finish();
+                        })
+                        .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
+                        .show();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            actionMode = null;
+            adapter.clearSelection();
+        }
+    };
 }
