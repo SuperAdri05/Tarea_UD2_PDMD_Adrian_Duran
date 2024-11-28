@@ -1,4 +1,4 @@
-package com.example.tarea_ud2.Model;
+package com.example.tarea_ud2.Models;
 
 import android.view.LayoutInflater;
 import android.view.View;

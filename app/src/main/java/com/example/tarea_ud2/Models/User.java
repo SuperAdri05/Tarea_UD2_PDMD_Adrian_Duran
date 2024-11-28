@@ -1,4 +1,4 @@
-package com.example.tarea_ud2.Model;
+package com.example.tarea_ud2.Models;
 
 public class User {
     private final String name;

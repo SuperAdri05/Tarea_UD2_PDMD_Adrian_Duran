@@ -1,4 +1,4 @@
-package com.example.tarea_ud2.Controler;
+package com.example.tarea_ud2.Controllers;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;

@@ -1,4 +1,4 @@
-package com.example.tarea_ud2.Controler;
+package com.example.tarea_ud2.Controllers;
 
 import android.os.Bundle;
 import android.util.Patterns;
@@ -7,13 +7,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
-
+import com.example.tarea_ud2.Models.*;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.tarea_ud2.R;
-import com.example.tarea_ud2.Model.User;
-import com.example.tarea_ud2.Model.Utils;
+import com.example.tarea_ud2.Resources.DBAccess;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -24,6 +23,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Button btnBack;
     private ImageView imgUser;
     private int selectedImageResourceId;
+    DBAccess mDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,9 @@ public class RegisterActivity extends AppCompatActivity {
 
         selectedImageResourceId = R.drawable.image1;
         imgUser.setImageResource(selectedImageResourceId);
+
+        mDB = new DBAccess(this);
+        mDB.getVersionDB();
 
         imgUser.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,14 +86,21 @@ public class RegisterActivity extends AppCompatActivity {
                     Toast.makeText(RegisterActivity.this, "Debes ser mayor de 18 años para registrarte", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if(mDB.insert(name, email, age, selectedImageResourceId) != -1){
+                    Toast("Usuario registrado exitosamente");
+                }else{
+                    Toast("Error! Usuario no insertado. Comprueba LogCat");
+                    return;
+                }
 
                 User newUser = new User(name, email, age, selectedImageResourceId);
                 Utils.userList.add(newUser);
-
-                Toast.makeText(RegisterActivity.this, "Usuario registrado exitosamente", Toast.LENGTH_SHORT).show();
-                finish();
             }
         });
+    }
+
+    public void Toast(String msg){
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private void showImageSelectionDialog() {

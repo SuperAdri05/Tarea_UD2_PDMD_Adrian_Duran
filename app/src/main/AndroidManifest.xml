@@ -13,19 +13,19 @@
         android:theme="@style/Theme.Tarea_UD2"
         tools:targetApi="31">
         <activity
-            android:name=".Controler.RegisterActivity"
+            android:name=".Controllers.RegisterActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Controler.ListActivity"
+            android:name=".Controllers.ListActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Controler.DetailActivity"
+            android:name=".Controllers.DetailActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".Controler.MainActivity"
+            android:name=".Controllers.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait" >
             <intent-filter>

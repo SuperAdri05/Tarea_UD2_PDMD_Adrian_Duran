@@ -1,4 +1,4 @@
-package com.example.tarea_ud2.Controler;
+package com.example.tarea_ud2.Controllers;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,10 +11,11 @@ import androidx.appcompat.view.ActionMode;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.tarea_ud2.Model.User;
-import com.example.tarea_ud2.Model.UserAdapter;
-import com.example.tarea_ud2.Model.Utils;
+import com.example.tarea_ud2.Models.User;
+import com.example.tarea_ud2.Models.UserAdapter;
+import com.example.tarea_ud2.Models.Utils;
 import com.example.tarea_ud2.R;
+import com.example.tarea_ud2.Resources.DBAccess;
 
 import java.util.ArrayList;
 
@@ -36,6 +37,8 @@ public class ListActivity extends AppCompatActivity {
         adapter = new UserAdapter(userList, this::showDetail);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+
 
         adapter.setOnSelectionChangeListener(selectedCount -> {
             if (selectedCount > 0) {
